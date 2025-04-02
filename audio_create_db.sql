@@ -1,17 +1,17 @@
 -- Жанры
-CREATE TABLE genere(
+CREATE TABLE IF NOT EXISTS genere(
     genere_id SERIAL PRIMARY KEY,
     genere_name VARCHAR(64) NOT NULL
 );
 
 -- Артисты
-CREATE TABLE artist(
+CREATE TABLE IF NOT EXISTS artist(
     artist_id SERIAL PRIMARY KEY,
     artist_name VARCHAR(64) NOT NULL
 );
 
 -- Связь артистов и жанров (многие ко многим)
-CREATE TABLE genere_artist (
+CREATE TABLE IF NOT EXISTS genere_artist (
     genere_artist_id SERIAL PRIMARY KEY, 
     genere_id INT NOT NULL, 
     artist_id INT NOT NULL, 
@@ -20,14 +20,14 @@ CREATE TABLE genere_artist (
 );
 
 -- Альбомы
-CREATE TABLE album(
+CREATE TABLE IF NOT EXISTS album(
     album_id SERIAL PRIMARY KEY,
     album_name VARCHAR(64) NOT NULL,
     album_year INTEGER NOT NULL
 );
 
 -- Связь артистов и альбомов (многие ко многим)
-CREATE TABLE artist_album (
+CREATE TABLE IF NOT EXISTS artist_album (
     artist_album_id SERIAL PRIMARY KEY, 
     artist_id INT NOT NULL, 
     album_id INT NOT NULL, 
@@ -36,23 +36,23 @@ CREATE TABLE artist_album (
 );
 
 -- Треки
-CREATE TABLE track(
+CREATE TABLE IF NOT EXISTS track(
     track_id SERIAL PRIMARY KEY,
     track_name VARCHAR(64) NOT NULL,
-    duration INT NOT NULL, -- длительность в секундах
+    duration INTERVAL NOT NULL,
     album_id INT NOT NULL,
     CONSTRAINT fk_album FOREIGN KEY(album_id) REFERENCES album(album_id) ON DELETE CASCADE
 );
 
 -- Коллекции (сборники)
-CREATE TABLE collection(
+CREATE TABLE IF NOT EXISTS collection(
     collection_id SERIAL PRIMARY KEY,
     collection_name VARCHAR(64) NOT NULL,
     collection_year SMALLINT NOT NULL
 );
 
 -- Связь треков и коллекций (многие ко многим)
-CREATE TABLE track_collection(
+CREATE TABLE IF NOT EXISTS track_collection(
     track_collection_id SERIAL PRIMARY KEY,
     track_id INTEGER NOT NULL,
     collection_id INTEGER NOT NULL,
