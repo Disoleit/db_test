@@ -3,8 +3,8 @@
 SELECT track_name, duration  FROM track 
 WHERE duration = (SELECT max(duration) FROM track);
 
---Название треков, продолжительность которых не менее 3,5 минут.
-SELECT track_name  FROM track WHERE duration > '00:03:30';
+--Название треков, продолжительность которых не менее 3,5 минут. (доработано)
+SELECT track_name  FROM track WHERE duration >= '00:03:30';
 
 --Названия сборников, вышедших в период с 2018 по 2020 год включительно.
 SELECT collection_name  FROM collection
@@ -15,12 +15,11 @@ AND collection_year <= 2020;
 SELECT artist_name FROM artist
 WHERE artist_name NOT LIKE '% %';
 
---Название треков, которые содержат слово «мой» или «my».
-SELECT track_name FROM track
-WHERE track_name LIKE '%мой %'
-OR track_name LIKE '% мой%'
-OR track_name LIKE '%my %'
-OR track_name LIKE '% my%';
+--Название треков, которые содержат слово «мой» или «my». (доработано)
+
+SELECT DISTINCT track_name FROM track
+WHERE track_name ~* '\m(мой|my)\M';
+
 
 --3
 
@@ -39,12 +38,14 @@ SELECT album_name,  AVG(t.duration) FROM album a
 JOIN track t ON a.album_id = t.album_id
 GROUP BY album_name;
 
---Все исполнители, которые не выпустили альбомы в 2020 году.
+--Все исполнители, которые не выпустили альбомы в 2020 году. (доработано)
 
-SELECT DISTINCT artist_name FROM artist a 
-JOIN artist_album aa ON a.artist_id = aa.artist_id 
+SELECT DISTINCT artist_name FROM artist a
+WHERE a.artist_id NOT IN(
+SELECT aa.artist_id  FROM artist_album aa
 JOIN album al ON aa.album_id = al.album_id
-WHERE al.album_year != '2020'
+WHERE al.album_year = '2020'
+);
 
 --Названия сборников, в которых присутствует конкретный исполнитель (выберите его сами).
 
